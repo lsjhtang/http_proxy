@@ -1,6 +1,7 @@
 package main
 
 import (
+	"hash/crc32"
 	"math/rand"
 	"time"
 )
@@ -88,6 +89,10 @@ func (this *LoadBalance) RandRobin2() *HttpServer { //加权轮询算法
 	return server
 }
 
+func (this *LoadBalance) SelectByIpHash(ip string) *HttpServer { //ip取余
+	index := int(crc32.ChecksumIEEE([]byte(ip))) % len(this.Servers)
+	return this.Servers[index]
+}
 
 var LB *LoadBalance
 func init()  {
