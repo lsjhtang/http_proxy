@@ -70,6 +70,23 @@ func (this *LoadBalance) RandRobin() *HttpServer { //轮询算法
 	return server
 }
 
+func (this *LoadBalance) RandRobin2() *HttpServer { //加权轮询算法
+	server := this.Servers[0]
+	sums:=0
+	for i:=0;i<len(this.Servers);i++{
+		sums += this.Servers[i].Weight
+		if this.CurIndex < sums {
+			server = this.Servers[i]
+			if i != len(this.Servers)-1 && this.CurIndex+1 == sums {//到达最后一轮且循环到最后一次
+				this.CurIndex ++
+			}else {
+				this.CurIndex = (this.CurIndex+1) % sums
+			}
+			break
+		}
+	}
+	return server
+}
 
 
 var LB *LoadBalance
