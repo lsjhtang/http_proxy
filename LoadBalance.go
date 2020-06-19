@@ -34,6 +34,17 @@ func (this *LoadBalance) SelectByRand() *HttpServer { //随机算法
 	return this.Servers[n]
 }
 
+func (this *LoadBalance) SelectByWeightRand() *HttpServer { //加权随机
+	var serverWeight  []int
+	for index,server := range this.Servers{
+		for i:=0;i<server.Weight;i++ {
+			serverWeight = append(serverWeight, index)
+		}
+	}
+	rand.Seed(time.Now().UnixNano())
+	n := rand.Intn(len(serverWeight))
+	return this.Servers[serverWeight[n]]
+}
 
 
 var LB *LoadBalance
