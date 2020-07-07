@@ -2,7 +2,6 @@ package main
 
 import (
 	"hash/crc32"
-	"log"
 	"math/rand"
 	"sort"
 	"time"
@@ -92,6 +91,8 @@ func (this *LoadBalance) RandRobin2() *HttpServer { //加权轮询算法
 				this.CurIndex = (this.CurIndex + 1) % sums
 			}
 			break
+		} else {
+			this.CurIndex = 0
 		}
 	}
 	return server
@@ -102,7 +103,6 @@ func (this *LoadBalance) RandRobin3() *HttpServer { //平滑加权轮询算法
 	for i, s := range this.Servers {
 		s.CPWeight += s.Weight
 		sums += this.Servers[i].Weight
-		log.Println(s.CPWeight)
 	}
 	sort.Sort(this.Servers)
 	server := this.Servers[0] //排序后的最大值
